@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>買送規則計算器 (優先匹配版)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 py-10 px-5">
+    <div class="max-w-2xl mx-auto space-y-6">
+        
+        <header class="text-center">
+            <h1 class="text-2xl font-bold text-slate-800">買幾送幾最優化計算</h1>
+            <p class="text-slate-500 text-sm">優先匹配單一規則，無匹配時計算最大化組合</p>
+        </header>
+
+        <!-- 1. 新增規則區塊 -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <h2 class="text-lg font-bold mb-4 text-indigo-600 flex items-center">
+                <span class="bg-indigo-100 text-indigo-600 w-6 h-6 rounded-full flex items-center justify-center mr-2 text-sm">1</span>
+                新增規則
+            </h2>
+            <div class="flex items-center space-x-3">
+                <div class="flex items-center bg-slate-100 rounded-lg px-3 py-2">
+                    <span class="text-slate-600 mr-2 font-medium">買</span>
+                    <input type="number" id="ruleBuy" min="1" placeholder="正整數" class="bg-transparent w-20 outline-none font-bold text-indigo-700">
+                </div>
+                <div class="flex items-center bg-slate-100 rounded-lg px-3 py-2">
+                    <span class="text-slate-600 mr-2 font-medium">送</span>
+                    <input type="number" id="ruleGet" min="1" placeholder="正整數" class="bg-transparent w-20 outline-none font-bold text-green-700">
+                </div>
+                <button onclick="addRule()" class="bg-indigo-500 text-white px-5 py-2 rounded-lg hover:bg-indigo-600 transition shadow-sm active:transform active:scale-95">新增</button>
+            </div>
+        </section>
+
+        <!-- 2. 目前規則區塊 -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <h2 class="text-lg font-bold mb-4 text-emerald-600 flex items-center">
+                <span class="bg-emerald-100 text-emerald-600 w-6 h-6 rounded-full flex items-center justify-center mr-2 text-sm">2</span>
+                目前規則
+            </h2>
+            <div id="rulesList" class="flex flex-wrap gap-2">
+                <p class="text-slate-400 italic">尚未設定規則...</p>
+            </div>
+        </section>
+
+        <!-- 3. 客戶購買量區塊 -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <h2 class="text-lg font-bold mb-4 text-orange-600 flex items-center">
+                <span class="bg-orange-100 text-orange-600 w-6 h-6 rounded-full flex items-center justify-center mr-2 text-sm">3</span>
+                客戶購買量
+            </h2>
+            <div class="flex items-center space-x-3">
+                <input type="number" id="purchaseAmount" min="1" placeholder="請輸入購買數量" class="border border-slate-200 p-3 rounded-lg flex-grow focus:ring-2 focus:ring-orange-400 outline-none transition">
+                <button onclick="calculate()" class="bg-orange-500 text-white px-8 py-3 rounded-lg hover:bg-orange-600 transition font-bold shadow-md active:transform active:scale-95">開始計算</button>
+            </div>
+        </section>
+
+        <!-- 4. 結果區塊 -->
+        <section id="resultSection" class="bg-white p-6 rounded-xl shadow-lg hidden border-2 border-orange-200">
+            <h2 class="text-lg font-bold mb-4 text-red-600 flex items-center">
+                <span class="bg-red-100 text-red-600 w-6 h-6 rounded-full flex items-center justify-center mr-2 text-sm">4</span>
+                計算結果
+            </h2>
+            <div id="resultOutput" class="space-y-3">
+                <!-- 結果顯示 -->
+            </div>
+        </section>
+    </div>
+
+    <script>
+        let rules = [];
+
+        function addRule() {
+            const buyInput = document.getElementById('ruleBuy');
+            const getInput = document.getElementById('ruleGet');
+            const buy = parseInt(buyInput.value);
+            const get = parseInt(getInput.value);
+
+            if (isNaN(buy) || isNaN(get) || buy <= 0 || get <= 0) {
+                alert("請輸入大於 0 的正整數");
+                return;
+            }
+
+            if (rules.some(r => r.buy === buy)) {
+                alert("已存在相同的『買』數量規則。");
+                return;
+            }
+
+            rules.push({ buy, get });
+            renderRules();
+            buyInput.value = '';
+            getInput.value = '';
+            buyInput.focus();
+        }
+
+        function removeRule(index) {
+            rules.splice(index, 1);
+            renderRules();
+        }
+
+        function renderRules() {
+            const list = document.getElementById('rulesList');
+            if (rules.length === 0) {
+                list.innerHTML = '<p class="text-slate-400 italic">尚未設定規則...</p>';
+                return;
+            }
+
+            list.innerHTML = rules.map((r, i) => `
+                <div class="bg-slate-100 pl-3 pr-2 py-1 rounded-md flex items-center border border-slate-200 group hover:border-indigo-300 transition">
+                    <span class="text-slate-700 font-medium text-sm">買 ${r.buy} 送 ${r.get}</span>
+                    <button onclick="removeRule(${i})" class="ml-2 text-slate-400 hover:text-red-500 font-bold transition">×</button>
+                </div>
+            `).join('');
+        }
+
+        function calculate() {
+            const amountInput = document.getElementById('purchaseAmount');
+            const target = parseInt(amountInput.value);
+            const resultSection = document.getElementById('resultSection');
+            const resultOutput = document.getElementById('resultOutput');
+
+            if (isNaN(target) || target <= 0) {
+                alert("請輸入購買數量");
+                return;
+            }
+
+            if (rules.length === 0) {
+                alert("目前沒有規則可計算");
+                return;
+            }
+
+            resultSection.classList.remove('hidden');
+
+            // --- 邏輯 1: 優先檢查精準匹配 ---
+            const exactMatch = rules.find(r => r.buy === target);
+            if (exactMatch) {
+                resultOutput.innerHTML = `
+                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                        <p class="text-2xl font-bold text-blue-700 mb-1">送 ${exactMatch.get}</p>
+                        <p class="text-blue-600 text-sm italic">原因：1 組買 ${exactMatch.buy} 送 ${exactMatch.get}（精準匹配規則）</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // --- 邏輯 2: 無精準匹配，進行最優組合計算 (動態規劃) ---
+            let dp = new Array(target + 1).fill(0);
+            let paths = new Array(target + 1).fill(null).map(() => new Set());
+            paths[0].add(JSON.stringify({}));
+
+            for (let i = 1; i <= target; i++) {
+                // 繼承前一步的最優解
+                dp[i] = dp[i-1];
+                paths[i] = new Set(paths[i-1]);
+
+                for (let rule of rules) {
+                    if (i >= rule.buy) {
+                        let prevIndex = i - rule.buy;
+                        let currentGiftTotal = dp[prevIndex] + rule.get;
+
+                        if (currentGiftTotal > dp[i]) {
+                            dp[i] = currentGiftTotal;
+                            paths[i] = new Set();
+                            updatePaths(paths[i], paths[prevIndex], rule);
+                        } else if (currentGiftTotal === dp[i] && currentGiftTotal > 0) {
+                            updatePaths(paths[i], paths[prevIndex], rule);
+                        }
+                    }
+                }
+            }
+
+            if (dp[target] === 0) {
+                resultOutput.innerHTML = `<p class="text-slate-500">購買量不足以獲得任何贈送。</p>`;
+            } else {
+                const combinationStrings = Array.from(paths[target]).map(jsonStr => {
+                    const combo = JSON.parse(jsonStr);
+                    return Object.entries(combo).map(([buy, count]) => {
+                        const rule = rules.find(r => r.buy == buy);
+                        return `<span class="font-bold">${count}組</span>買 ${rule.buy} 送 ${rule.get}`;
+                    }).join(' + ');
+                });
+
+                resultOutput.innerHTML = `
+                    <div class="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                        <p class="text-2xl font-bold text-orange-700 mb-1">送 ${dp[target]}</p>
+                        <div class="text-orange-800 text-sm">
+                            <span class="font-medium">原因：</span>
+                            <div class="mt-1 space-y-1">
+                                ${combinationStrings.join('<div class="text-xs text-orange-400 font-bold tracking-widest my-1">─ OR ─</div>')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function updatePaths(currentPathsSet, prevPathsSet, rule) {
+            prevPathsSet.forEach(jsonStr => {
+                let combo = JSON.parse(jsonStr);
+                let newCombo = { ...combo };
+                newCombo[rule.buy] = (newCombo[rule.buy] || 0) + 1;
+                
+                // 排序以確保組合唯一
+                const sorted = {};
+                Object.keys(newCombo).sort((a,b) => a-b).forEach(k => sorted[k] = newCombo[k]);
+                currentPathsSet.add(JSON.stringify(sorted));
+            });
+        }
+    </script>
+</body>
+</html>
