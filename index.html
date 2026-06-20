@@ -7,67 +7,32 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         * { box-sizing: border-box; }
-        body { overflow-x: hidden; position: fixed; width: 100%; height: 100%; } /* 防止手機版晃動 */
-        
+        body { overflow-x: hidden; position: fixed; width: 100%; height: 100%; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        .snap-container { 
-            display: flex; 
-            overflow-x: auto; 
-            scroll-snap-type: x mandatory; 
-            scroll-behavior: smooth;
-            width: 100vw;
-            height: 100%;
-        }
-        
-        .snap-card { 
-            flex: 0 0 100vw; /* 確保每一張卡片寬度剛好是一屏 */
-            scroll-snap-align: start; 
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 0 16px; /* 卡片左右留間距 */
-        }
-
-        .card-inner { 
-            width: 100%;
-            max-width: 450px; /* 電腦版最大寬度 */
-            height: calc(100dvh - 160px); /* 動態計算高度，預留標題與分頁點 */
-            display: flex;
-            flex-direction: column;
-            background: #f8fafc;
-            border-radius: 24px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-        }
-
+        .snap-container { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; width: 100vw; height: 100%; }
+        .snap-card { flex: 0 0 100vw; scroll-snap-align: start; display: flex; justify-content: center; align-items: flex-start; padding: 0 16px; }
+        .card-inner { width: 100%; max-width: 450px; height: calc(100dvh - 140px); display: flex; flex-direction: column; background: #f8fafc; border-radius: 24px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3); overflow: hidden; }
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        
-        /* 增加輸入框聚焦時的視覺感 */
-        input:focus { border-color: transparent !important; }
+        table input { width: 100%; background: transparent; text-align: center; outline: none; font-size: 13px; font-weight: bold; }
+        tr { border-bottom: 1px solid #e2e8f0; }
     </style>
 </head>
-<body class="bg-slate-900 font-sans">
+<body class="bg-slate-900 font-sans text-slate-800">
 
-    <!-- 標題區域 -->
-    <header class="py-4 text-center text-white h-[60px]">
-        <h1 class="text-xl font-bold tracking-tight">最優化計算助手</h1>
-        <p class="text-slate-400 text-[10px]">左右滑動切換題型</p>
+    <header class="py-3 text-center text-white h-[50px]">
+        <h1 class="text-lg font-bold tracking-tight">最優化計算助手</h1>
     </header>
 
-    <!-- 滑動主容器 -->
     <main class="snap-container no-scrollbar">
         
         <!-- CARD 1: 買幾送幾 + 換大包 -->
         <div class="snap-card">
             <div class="card-inner">
                 <div class="bg-emerald-600 p-4 text-white text-center flex-shrink-0">
-                    <h2 class="text-lg font-bold font-sans">買幾送幾 + 換大包</h2>
+                    <h2 class="text-lg font-bold">買幾送幾 + 換大包</h2>
                 </div>
-                
-                <div class="p-5 overflow-y-auto space-y-5 flex-grow">
-                    <!-- 規則新增區 -->
+                <div class="p-5 overflow-y-auto space-y-5 flex-grow no-scrollbar">
                     <div class="space-y-2">
                         <label class="text-slate-500 text-xs font-bold uppercase tracking-wider">新增規則 (買/送)</label>
                         <div class="flex items-center space-x-2">
@@ -77,37 +42,22 @@
                                 <span class="text-slate-400 text-sm mx-1">送</span>
                                 <input type="number" id="ruleGet1" class="w-full outline-none font-bold text-green-600 bg-transparent">
                             </div>
-                            <button onclick="addRule(1)" class="bg-emerald-600 text-white w-12 h-10 rounded-xl font-bold shadow-lg active:scale-90 transition-transform flex-shrink-0">+</button>
+                            <button onclick="addRule(1)" class="bg-emerald-600 text-white w-12 h-10 rounded-xl font-bold active:scale-90 transition">+</button>
                         </div>
-                        <div id="rulesList1" class="flex flex-wrap gap-2 pt-1">
-                            <p class="text-slate-300 italic text-xs text-center w-full">尚未建立規則</p>
-                        </div>
+                        <div id="rulesList1" class="flex flex-wrap gap-2 pt-1"><p class="text-slate-300 italic text-xs text-center w-full">尚未建立規則</p></div>
                     </div>
-
-                    <!-- 規格設定區 -->
                     <div class="grid grid-cols-2 gap-3">
-                        <div class="space-y-2">
-                            <label class="text-slate-500 text-xs font-bold uppercase">小包顆數</label>
-                            <input type="number" id="smallX" placeholder="例如 15" class="w-full border border-slate-200 p-3 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 transition">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-slate-500 text-xs font-bold uppercase">大包顆數</label>
-                            <input type="number" id="largeY" placeholder="例如 60" class="w-full border border-slate-200 p-3 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 transition">
-                        </div>
+                        <div class="space-y-2"><label class="text-slate-500 text-xs font-bold uppercase">小包顆數</label><input type="number" id="smallX" placeholder="例如 15" class="w-full border border-slate-200 p-3 rounded-xl outline-none"></div>
+                        <div class="space-y-2"><label class="text-slate-500 text-xs font-bold uppercase">大包顆數</label><input type="number" id="largeY" placeholder="例如 60" class="w-full border border-slate-200 p-3 rounded-xl outline-none"></div>
                     </div>
-
                     <div class="space-y-2">
                         <label class="text-slate-500 text-xs font-bold uppercase">客戶購買量 (小包)</label>
                         <div class="flex space-x-2">
-                            <input type="number" id="purchaseAmount1" placeholder="輸入購買小包數" class="flex-grow border border-slate-200 p-3 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 transition w-full">
-                            <button onclick="calculate1()" class="bg-orange-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg active:scale-90 transition-transform flex-shrink-0">計算</button>
+                            <input type="number" id="purchaseAmount1" class="flex-grow border border-slate-200 p-3 rounded-xl outline-none w-full">
+                            <button onclick="calculate1()" class="bg-orange-500 text-white px-6 py-3 rounded-xl font-bold active:scale-95 transition">計算</button>
                         </div>
                     </div>
-
-                    <div id="resultSection1" class="hidden pb-4">
-                        <label class="text-slate-500 text-xs font-bold uppercase">計算結果</label>
-                        <div id="resultOutput1" class="mt-2 space-y-2"></div>
-                    </div>
+                    <div id="resultSection1" class="hidden pb-4"><div id="resultOutput1" class="mt-2 space-y-2"></div></div>
                 </div>
             </div>
         </div>
@@ -118,8 +68,7 @@
                 <div class="bg-indigo-600 p-4 text-white text-center flex-shrink-0">
                     <h2 class="text-lg font-bold">買幾送幾最優化</h2>
                 </div>
-                
-                <div class="p-5 overflow-y-auto space-y-5 flex-grow">
+                <div class="p-5 overflow-y-auto space-y-5 flex-grow no-scrollbar">
                     <div class="space-y-2">
                         <label class="text-slate-500 text-xs font-bold uppercase tracking-wider">新增規則 (買/送)</label>
                         <div class="flex items-center space-x-2">
@@ -129,28 +78,66 @@
                                 <span class="text-slate-400 text-sm mx-1">送</span>
                                 <input type="number" id="ruleGet2" class="w-full outline-none font-bold text-green-600 bg-transparent">
                             </div>
-                            <button onclick="addRule(2)" class="bg-indigo-600 text-white w-12 h-10 rounded-xl font-bold shadow-lg active:scale-90 transition-transform flex-shrink-0">+</button>
+                            <button onclick="addRule(2)" class="bg-indigo-600 text-white w-12 h-10 rounded-xl font-bold active:scale-90 transition">+</button>
                         </div>
+                        <div id="rulesList2" class="flex flex-wrap gap-2 min-h-[30px]"><p class="text-slate-300 italic text-xs text-center w-full">尚未建立規則</p></div>
                     </div>
-
-                    <div class="space-y-2">
-                        <label class="text-slate-500 text-xs font-bold uppercase">目前規則</label>
-                        <div id="rulesList2" class="flex flex-wrap gap-2 min-h-[30px]">
-                            <p class="text-slate-300 italic text-xs text-center w-full">尚未建立規則</p>
-                        </div>
-                    </div>
-
                     <div class="space-y-2">
                         <label class="text-slate-500 text-xs font-bold uppercase">客戶購買量</label>
                         <div class="flex space-x-2">
-                            <input type="number" id="purchaseAmount2" placeholder="輸入數量" class="flex-grow border border-slate-200 p-3 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 transition w-full">
-                            <button onclick="calculate2()" class="bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg active:scale-90 transition-transform flex-shrink-0">計算</button>
+                            <input type="number" id="purchaseAmount2" class="flex-grow border border-slate-200 p-3 rounded-xl outline-none w-full">
+                            <button onclick="calculate2()" class="bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold active:scale-95 transition">計算</button>
                         </div>
                     </div>
+                    <div id="resultSection2" class="hidden pb-4"><div id="resultOutput2" class="mt-2"></div></div>
+                </div>
+            </div>
+        </div>
 
-                    <div id="resultSection2" class="hidden pb-4">
-                        <label class="text-slate-500 text-xs font-bold uppercase">計算結果</label>
-                        <div id="resultOutput2" class="mt-2"></div>
+        <!-- CARD 3: 最大需貨量 -->
+        <div class="snap-card">
+            <div class="card-inner">
+                <div class="bg-rose-600 p-4 text-white text-center flex-shrink-0">
+                    <h2 class="text-lg font-bold">最大需貨量</h2>
+                </div>
+                <div class="p-5 overflow-y-auto space-y-5 flex-grow no-scrollbar">
+                    <!-- 第一區：規則 -->
+                    <div class="space-y-2">
+                        <label class="text-slate-500 text-xs font-bold uppercase tracking-wider">新增規則 (買/送)</label>
+                        <div class="flex items-center space-x-2">
+                            <div class="flex-grow flex items-center bg-white border border-slate-200 rounded-xl px-3 py-2">
+                                <span class="text-slate-400 text-sm mr-1">買</span>
+                                <input type="number" id="ruleBuy3" class="w-full outline-none font-bold text-rose-600 bg-transparent">
+                                <span class="text-slate-400 text-sm mx-1">送</span>
+                                <input type="number" id="ruleGet3" class="w-full outline-none font-bold text-green-600 bg-transparent">
+                            </div>
+                            <button onclick="addRule(3)" class="bg-rose-600 text-white w-12 h-10 rounded-xl font-bold active:scale-90 transition">+</button>
+                        </div>
+                        <div id="rulesList3" class="flex flex-wrap gap-2 pt-1"><p class="text-slate-300 italic text-xs text-center w-full">尚未建立規則</p></div>
+                    </div>
+
+                    <!-- 第二區：表格 -->
+                    <div class="overflow-x-auto border border-slate-200 rounded-xl bg-white shadow-inner">
+                        <table class="w-full text-[11px] text-center border-collapse table-fixed">
+                            <thead class="bg-slate-100 text-slate-600">
+                                <tr>
+                                    <th class="p-2 border-r w-[22%]">倉別</th>
+                                    <th class="p-2 border-r w-[26%]">可用庫存</th>
+                                    <th class="p-2 border-r w-[26%]">缺貨</th>
+                                    <th class="p-2 w-[26%]">最大需貨</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stockTableBody">
+                                <!-- JS 生成 -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <button onclick="calculate3()" class="w-full bg-rose-600 text-white py-3 rounded-xl font-bold shadow-lg active:scale-95 transition">開始計算</button>
+
+                    <!-- 第三區：結果 -->
+                    <div id="resultSection3" class="hidden animate-in fade-in slide-in-from-bottom-2 duration-300">
+                        <div id="resultOutput3" class="space-y-3"></div>
                     </div>
                 </div>
             </div>
@@ -159,41 +146,54 @@
     </main>
 
     <!-- 底部指示點 -->
-    <div class="h-[60px] flex justify-center items-center space-x-2">
-        <div class="w-2 h-2 rounded-full transition-all duration-300" id="dot1"></div>
-        <div class="w-2 h-2 rounded-full transition-all duration-300" id="dot2"></div>
+    <div class="h-[40px] flex justify-center items-center space-x-2">
+        <div class="w-2 h-2 rounded-full bg-slate-700 transition-all duration-300" id="dot1"></div>
+        <div class="w-2 h-2 rounded-full bg-slate-700 transition-all duration-300" id="dot2"></div>
+        <div class="w-2 h-2 rounded-full bg-slate-700 transition-all duration-300" id="dot3"></div>
     </div>
 
     <script>
-        let rules1 = [];
-        let rules2 = [];
+        let rules1 = [], rules2 = [], rules3 = [];
+        const warehouseNames = ["主倉", "二台倉", "三台倉", "宏綸倉", "羅伊倉", "棉游倉", "電商倉", "總倉"];
 
+        // 初始化表格 (Card 3)
+        const tableBody = document.getElementById('stockTableBody');
+        warehouseNames.forEach((name) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="p-2 bg-slate-50 font-bold border-r text-slate-600">${name}</td>
+                <td class="p-1 border-r"><input type="number" class="available-input" placeholder="0"></td>
+                <td class="p-1 border-r"><input type="number" class="out-input" placeholder="0"></td>
+                <td class="p-2 font-black text-rose-600 max-req-cell text-xs">0</td>
+            `;
+            tableBody.appendChild(tr);
+        });
+
+        // 通用規則新增
         function addRule(type) {
             const buyInput = document.getElementById(`ruleBuy${type}`);
             const getInput = document.getElementById(`ruleGet${type}`);
-            const buy = parseInt(buyInput.value);
-            const get = parseInt(getInput.value);
-
+            const buy = parseInt(buyInput.value), get = parseInt(getInput.value);
             if (isNaN(buy) || isNaN(get) || buy <= 0 || get <= 0) return;
             
-            let targetRules = type === 1 ? rules1 : rules2;
-            if (targetRules.some(r => r.buy === buy)) { alert('此購買量已有規則'); return; }
-
+            let targetRules = [null, rules1, rules2, rules3][type];
+            if (targetRules.some(r => r.buy === buy)) return;
+            
             targetRules.push({ buy, get });
             renderRules(type);
             buyInput.value = ''; getInput.value = '';
         }
 
         function removeRule(type, index) {
-            if (type === 1) rules1.splice(index, 1);
-            else rules2.splice(index, 1);
+            const targetRules = [null, rules1, rules2, rules3][type];
+            targetRules.splice(index, 1);
             renderRules(type);
         }
 
         function renderRules(type) {
             const list = document.getElementById(`rulesList${type}`);
-            const targetRules = type === 1 ? rules1 : rules2;
-            const color = type === 1 ? 'emerald' : 'indigo';
+            const targetRules = [null, rules1, rules2, rules3][type];
+            const color = [null, 'emerald', 'indigo', 'rose'][type];
             
             if (targetRules.length === 0) {
                 list.innerHTML = '<p class="text-slate-300 italic text-xs text-center w-full">尚未建立規則</p>';
@@ -202,14 +202,15 @@
             list.innerHTML = targetRules.map((r, i) => `
                 <div class="bg-${color}-50 px-2 py-1 rounded-lg flex items-center border border-${color}-100 text-${color}-700 text-[10px] font-bold">
                     <span>買${r.buy}送${r.get}</span>
-                    <button onclick="removeRule(${type}, ${i})" class="ml-1 text-slate-300 hover:text-red-500 p-1">×</button>
+                    <button onclick="removeRule(${type}, ${i})" class="ml-1 text-slate-300 p-1">×</button>
                 </div>
             `).join('');
         }
 
+        // --- Card 1 & 2 核心組合計算 (DP) ---
         function getBestGift(target, rules) {
             const exactMatch = rules.find(r => r.buy === target);
-            if (exactMatch) return { gift: exactMatch.get, reason: `1組買 ${exactMatch.buy} 送 ${exactMatch.get}` };
+            if (exactMatch) return { gift: exactMatch.get, reason: `1組買${exactMatch.buy}送${exactMatch.get}` };
 
             let dp = new Array(target + 1).fill(0);
             let paths = new Array(target + 1).fill(null).map(() => new Set());
@@ -220,85 +221,124 @@
                 paths[i] = new Set(paths[i-1]);
                 for (let rule of rules) {
                     if (i >= rule.buy) {
-                        let prev = i - rule.buy;
-                        let currentGift = dp[prev] + rule.get;
-                        if (currentGift > dp[i]) {
-                            dp[i] = currentGift;
+                        let prev = i - rule.buy, cur = dp[prev] + rule.get;
+                        if (cur > dp[i]) {
+                            dp[i] = cur;
                             paths[i] = new Set();
                             updatePaths(paths[i], paths[prev], rule);
-                        } else if (currentGift === dp[i] && currentGift > 0) {
+                        } else if (cur === dp[i] && cur > 0) {
                             updatePaths(paths[i], paths[prev], rule);
                         }
                     }
                 }
             }
             if (dp[target] === 0) return { gift: 0, reason: "無符合規則" };
-            const strings = Array.from(paths[target]).map(jsonStr => {
-                const combo = JSON.parse(jsonStr);
-                return Object.entries(combo).map(([buy, count]) => {
-                    const r = rules.find(ru => ru.buy == buy);
-                    return `${count}組買${r.buy}送${r.get}`;
-                }).join('+');
+            const s = Array.from(paths[target]).map(j => {
+                const c = JSON.parse(j);
+                return Object.entries(c).map(([b, n]) => `${n}組買${b}送${rules.find(r=>r.buy==b).get}`).join('+');
             });
-            return { gift: dp[target], reason: strings.join(' 或 ') };
+            return { gift: dp[target], reason: s.join('或') };
         }
 
-        function updatePaths(currentSet, prevSet, rule) {
-            prevSet.forEach(jsonStr => {
-                let combo = JSON.parse(jsonStr);
-                let newCombo = { ...combo };
-                newCombo[rule.buy] = (newCombo[rule.buy] || 0) + 1;
-                const sorted = {};
-                Object.keys(newCombo).sort((a,b) => a-b).forEach(k => sorted[k] = newCombo[k]);
-                currentSet.add(JSON.stringify(sorted));
+        function updatePaths(c, p, r) {
+            p.forEach(j => {
+                let co = JSON.parse(j); co[r.buy] = (co[r.buy] || 0) + 1;
+                const so = {}; Object.keys(co).sort((a,b)=>a-b).forEach(k => so[k] = co[k]);
+                c.add(JSON.stringify(so));
             });
         }
 
         function calculate1() {
-            const target = parseInt(document.getElementById('purchaseAmount1').value);
-            const x = parseInt(document.getElementById('smallX').value);
-            const y = parseInt(document.getElementById('largeY').value);
-            if (isNaN(target) || isNaN(x) || isNaN(y) || rules1.length === 0) {
-                alert("請確保已輸入規則、顆數與購買量");
-                return;
-            }
-            const res = getBestGift(target, rules1);
-            const totalPellets = (target + res.gift) * x;
-            const bigPacks = Math.floor(totalPellets / y);
-            const smallPacks = Math.floor((totalPellets % y) / x);
-            const leftover = (totalPellets % y) % x;
-
+            const t = parseInt(document.getElementById('purchaseAmount1').value), x = parseInt(document.getElementById('smallX').value), y = parseInt(document.getElementById('largeY').value);
+            if (isNaN(t) || isNaN(x) || isNaN(y) || rules1.length === 0) return;
+            const res = getBestGift(t, rules1);
+            const total = (t + res.gift) * x;
             document.getElementById('resultSection1').classList.remove('hidden');
             document.getElementById('resultOutput1').innerHTML = `
-                <div class="bg-emerald-600 p-4 rounded-2xl text-white shadow-md">
-                    <p class="text-sm opacity-80 uppercase font-bold text-xs">買送結果</p>
+                <div class="bg-emerald-600 p-4 rounded-2xl text-white shadow-md text-center">
                     <p class="text-2xl font-bold">送 ${res.gift} 小包</p>
-                    <p class="text-[10px] opacity-70 italic">${res.reason}</p>
+                    <p class="text-[10px] opacity-70 mt-1 italic">${res.reason}</p>
                 </div>
-                <div class="bg-white border-2 border-orange-500 p-4 rounded-2xl">
-                    <p class="text-sm text-orange-600 uppercase font-bold text-xs">轉換結果 (共 ${totalPellets} 顆)</p>
-                    <div class="flex items-end space-x-1 mt-1">
-                        <span class="text-3xl font-black text-slate-800">${bigPacks}</span><span class="text-slate-500 font-bold pb-1 text-sm">大包</span>
-                        <span class="text-2xl font-bold text-slate-300 pb-1 mx-1">+</span>
-                        <span class="text-3xl font-black text-slate-800">${smallPacks}</span><span class="text-slate-500 font-bold pb-1 text-sm">小包</span>
-                    </div>
-                    ${leftover > 0 ? `<p class="text-red-500 text-[10px] mt-1 font-bold">註：餘 ${leftover} 顆不成包</p>` : ''}
+                <div class="bg-white border-2 border-orange-500 p-4 rounded-2xl text-center font-bold text-orange-600">
+                    轉換結果: ${Math.floor(total/y)} 大包 + ${Math.floor((total%y)/x)} 小包
                 </div>`;
         }
 
         function calculate2() {
-            const target = parseInt(document.getElementById('purchaseAmount2').value);
-            if (isNaN(target) || rules2.length === 0) return;
-            const res = getBestGift(target, rules2);
+            const t = parseInt(document.getElementById('purchaseAmount2').value);
+            if (isNaN(t) || rules2.length === 0) return;
+            const res = getBestGift(t, rules2);
             document.getElementById('resultSection2').classList.remove('hidden');
-            document.getElementById('resultOutput2').innerHTML = `<div class="bg-indigo-600 p-4 rounded-2xl text-white shadow-lg"><p class="text-3xl font-bold">送 ${res.gift}</p><p class="text-indigo-100 text-xs mt-1 italic">原因：${res.reason}</p></div>`;
+            document.getElementById('resultOutput2').innerHTML = `<div class="bg-indigo-600 p-4 rounded-2xl text-white text-center shadow-lg"><p class="text-2xl font-bold text-white">送 ${res.gift}</p><p class="text-[10px] opacity-70 mt-1 text-white italic">${res.reason}</p></div>`;
         }
 
+        // --- Card 3 核心計算 ---
+        function calculate3() {
+            if (rules3.length === 0) { alert("請先新增至少一組規則"); return; }
+
+            let maxLeverage = 0;
+            rules3.forEach(r => {
+                let leverage = (r.buy + r.get) / r.buy;
+                if (leverage > maxLeverage) maxLeverage = leverage;
+            });
+
+            const availInputs = document.querySelectorAll('.available-input');
+            const outInputs = document.querySelectorAll('.out-input');
+            const maxReqCells = document.querySelectorAll('.max-req-cell');
+
+            let totalD = 0, totalE = 0;
+
+            availInputs.forEach((input, i) => {
+                let d = parseInt(input.value) || 0;
+                let e = parseInt(outInputs[i].value) || 0;
+                
+                // 最大需貨 = 缺貨量 * 最大槓桿 -> 無條件進位 (Ceil)
+                let maxReq = Math.ceil(e * maxLeverage);
+                
+                maxReqCells[i].innerText = maxReq;
+                totalD += d;
+                totalE += e;
+            });
+
+            // 安全配貨量 F = 總可用庫存 D / 最大槓桿 -> 無條件捨去 (Floor)
+            let F = Math.floor(totalD / maxLeverage);
+            
+            const resSection = document.getElementById('resultSection3');
+            const resOutput = document.getElementById('resultOutput3');
+            resSection.classList.remove('hidden');
+
+            let isEnough = F >= totalE;
+            let statusHTML = isEnough 
+                ? `<div class="border-l-4 p-4 rounded-r-xl text-green-700 bg-green-50 border-green-500 shadow-sm">
+                    <p class="text-lg font-bold font-sans">貨量應足夠</p>
+                    <p class="text-xs">安全配貨量 ${F} 大於等於 缺貨量 ${totalE}</p>`
+                : `<div class="border-l-4 p-4 rounded-r-xl text-red-700 bg-red-50 border-red-500 shadow-sm">
+                    <p class="text-lg font-bold font-sans">貨量可能不足</p>
+                    <p class="text-xs">安全配貨量 ${F} 小於 缺貨量 ${totalE}</p>`;
+
+            resOutput.innerHTML = `
+                <div class="bg-rose-600 p-4 rounded-xl text-white shadow-md text-center">
+                    <p class="text-xs opacity-80 uppercase font-bold tracking-widest">槓桿分析結果</p>
+                    <p class="text-2xl font-black">最大槓桿：${maxLeverage.toFixed(2)}</p>
+                </div>
+                ${statusHTML}
+                    <div class="mt-2 pt-2 border-t border-current border-opacity-20 text-[10px] font-mono italic">
+                        總可用庫存 ${totalD} / 最大槓桿 ${maxLeverage.toFixed(2)} = 安全配貨量 ${F}
+                    </div>
+                </div>
+            `;
+        }
+
+        // 滑動處理
         const container = document.querySelector('.snap-container');
         function updateDots() {
             const page = Math.round(container.scrollLeft / window.innerWidth);
-            document.getElementById('dot1').className = page === 0 ? 'w-6 h-2 rounded-full bg-emerald-500' : 'w-2 h-2 rounded-full bg-slate-700';
-            document.getElementById('dot2').className = page === 1 ? 'w-6 h-2 rounded-full bg-indigo-500' : 'w-2 h-2 rounded-full bg-slate-700';
+            const dots = [document.getElementById('dot1'), document.getElementById('dot2'), document.getElementById('dot3')];
+            const colors = ['bg-emerald-500', 'bg-indigo-500', 'bg-rose-500'];
+            dots.forEach((d, i) => {
+                if (i === page) d.className = `w-6 h-2 rounded-full ${colors[i]}`;
+                else d.className = 'w-2 h-2 rounded-full bg-slate-700';
+            });
         }
         container.addEventListener('scroll', updateDots);
         window.addEventListener('resize', updateDots);
